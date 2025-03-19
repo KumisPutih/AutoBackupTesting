@@ -57,6 +57,13 @@ if [ "$CHOICE" == "1" ]; then
   
   node reqtoken.js
   
+  CONFIG_FILE="config.json"
+
+  if [ ! -f "$CONFIG_FILE" ]; then
+    echo "{}" > "$CONFIG_FILE"
+  fi
+  
+  jq --argjson mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
   echo -e "\033[1;33m🚀 Starting the backup process with PM2...\033[0m"
   pm2 start backup.js --name "backup"
 

@@ -24,7 +24,6 @@ apt update
 apt install -y jq wget
 
 echo -e "\033[1;33m🚀 Installing Node Version Manager (nvm)...\033[0m"
-rm -f backup.js
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
 
 export NVM_DIR="$HOME/.nvm"

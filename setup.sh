@@ -53,8 +53,8 @@ done
 if [ "$CHOICE" == "1" ]; then
   # Backup
   echo -e "\033[1;33m📥 Downloading backup script...\033[0m"
-  wget -qO backup.js https://files.chiwa.id/script/backuppanel/backup.js
   chmod +x backup.js
+  chmod +x reqtoken.js
   
   node reqtoken.js
   

@@ -4,25 +4,8 @@
 # 💾 Script Auto Backup Panel 💾
 # ================================
 
-clear
 
-# Display ASCII Art
-cat << "EOF"
-⣇⣿⠘⣿⣿⣿⡿⡿⣟⣟⢟⢟⢝⠵⡝⣿⡿⢂⣼⣿⣷⣌⠩⡫⡻⣝⠹⢿⣿⣷
-⡆⣿⣆⠱⣝⡵⣝⢅⠙⣿⢕⢕⢕⢕⢝⣥⢒⠅⣿⣿⣿⡿⣳⣌⠪⡪⣡⢑⢝⣇
-⡆⣿⣿⣦⠹⣳⣳⣕⢅⠈⢗⢕⢕⢕⢕⢕⢈⢆⠟⠋⠉⠁⠉⠉⠁⠈⠼⢐⢕⢽
-⡗⢰⣶⣶⣦⣝⢝⢕⢕⠅⡆⢕⢕⢕⢕⢕⣴⠏⣠⡶⠛⡉⡉⡛⢶⣦⡀⠐⣕⢕
-⡝⡄⢻⢟⣿⣿⣷⣕⣕⣅⣿⣔⣕⣵⣵⣿⣿⢠⣿⢠⣮⡈⣌⠨⠅⠹⣷⡀⢱⢕
-⡝⡵⠟⠈⢀⣀⣀⡀⠉⢿⣿⣿⣿⣿⣿⣿⣿⣼⣿⢈⡋⠴⢿⡟⣡⡇⣿⡇⡀⢕
-⡝⠁⣠⣾⠟⡉⡉⡉⠻⣦⣻⣿⣿⣿⣿⣿⣿⣿⣿⣧⠸⣿⣦⣥⣿⡇⡿⣰⢗⢄
-⠁⢰⣿⡏⣴⣌⠈⣌⠡⠈⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣬⣉⣉⣁⣄⢖⢕⢕⢕
-⡀⢻⣿⡇⢙⠁⠴⢿⡟⣡⡆⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣵⣵⣿
-⡻⣄⣻⣿⣌⠘⢿⣷⣥⣿⠇⣿⣿⣿⣿⣿⣿⠛⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣷⢄⠻⣿⣟⠿⠦⠍⠉⣡⣾⣿⣿⣿⣿⣿⣿⢸⣿⣦⠙⣿⣿⣿⣿⣿⣿⣿⣿⠟
-⡕⡑⣑⣈⣻⢗⢟⢞⢝⣻⣿⣿⣿⣿⣿⣿⣿⠸⣿⠿⠃⣿⣿⣿⣿⣿⣿⡿⠁⣠
-⡝⡵⡈⢟⢕⢕⢕⢕⣵⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣿⣿⣿⣿⣿⠿⠋⣀⣈⠙
-⡝⡵⡕⡀⠑⠳⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⢉⡠⡲⡫⡪⡪⡣
-EOF
+
 
 echo -e "\033[1;32m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 echo -e "\033[1;33mSelamat datang di script auto backup panel!\033[0m"
@@ -72,27 +55,9 @@ if [ "$CHOICE" == "1" ]; then
   echo -e "\033[1;33m📥 Downloading backup script...\033[0m"
   wget -qO backup.js https://files.chiwa.id/script/backuppanel/backup.js
   chmod +x backup.js
-
-  SERVER_BASE_URL="https://api.chiwa.id"
-
-  AUTH_URL=$(curl -s "$SERVER_BASE_URL/api/auth/common/gdrive" | jq -r '.url')
-
-  echo -e "\033[1;35mPlease visit the following URL to login: \033[1;36m$AUTH_URL\033[0m"
-  read -p "Enter the authentication code: " AUTH_CODE
-
-  TOKEN_RESPONSE=$(curl -s "$SERVER_BASE_URL/api/auth/common/gdrive/code?code=$AUTH_CODE")
-  ERROR=$(echo "$TOKEN_RESPONSE" | jq -r '.error')
-
-  TOKENS=$(echo "$TOKEN_RESPONSE" | jq '.tokens')
-  CONFIG_FILE="config.json"
-
-  if [ ! -f "$CONFIG_FILE" ]; then
-    echo "{}" > "$CONFIG_FILE"
-  fi
-
-  jq --argjson tokens "$TOKENS" '.tokens = $tokens' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
-  echo -e "\033[1;32m✅ Authentication successful! Tokens saved to config.json.\033[0m"
-
+  
+  node reqtoken.js
+  
   echo -e "\033[1;33m🚀 Starting the backup process with PM2...\033[0m"
   pm2 start backup.js --name "backup"
 
